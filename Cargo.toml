@@ -1,0 +1,19 @@
+[package]
+name = "os-locale"
+version = "0.1.0"
+authors = ["i509VCB <git@i509.me>"]
+edition = "2018"
+
+[dependencies]
+
+# Platform dependencies
+[target.'cfg(windows)'.dependencies.winapi]
+version = "0.3.9"
+features = [
+    "minwindef", # WORD
+    "winnls", # winnls.h
+    "winnt" # LANGID
+]
+
+[target.'cfg(windows)'.dependencies.libc]
+version = "0.2.82" # wcslen
