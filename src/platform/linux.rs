@@ -6,7 +6,6 @@ pub(crate) fn _get_user_locale() -> Result<String, OsLocaleError> {
 	if let Ok(raw_value) = std::env::var("LANG") {
 		// Unset locale - C ANSI standards say default to en_US
 		if raw_value == "C" {
-			// en-US SHOULD exist so we expect the value and then wrap it again
 			return Ok(String::from("en-US"));
 		}
 
@@ -19,7 +18,8 @@ pub(crate) fn _get_user_locale() -> Result<String, OsLocaleError> {
 }
 
 pub(crate) fn format_raw_user_lang(raw: String) -> Result<String, OsLocaleError> {
-	/* Find one of the following to split off the lang code:
+	/*
+	 * Find one of the following to split off the lang code:
 	 * First index of `.` as in `en_US.UTF_8`
 	 * A space which separates generic code from char set.
 	 * Terminate at an `@` which specifies a locale at a specific location

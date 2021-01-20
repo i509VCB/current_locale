@@ -1,7 +1,7 @@
 //! # os-locale
 //!
 //! os-locale is a library for obtaining a user's current locale from the OS.
-//! os-locale provides methods to get the user's preferred language in a BCP47 (IETF) compliant
+//! os-locale provides methods to get the user's preferred language in a form similar to a BCP47 (IETF) compliant
 //! language code.
 //!
 //! Obtaining the user's current locale is widely useful for displaying a user's preferred language
@@ -15,7 +15,7 @@ target_os = "macos",
 target_os = "android",
 target_os = "ios"
 ))]
-compile_error!("You are compiling for an unimplemented platform!");
+compile_error!("You are compiling for an unimplemented platform!\nContributions are welcome to os-locale to implement any new platforms.");
 
 #[cfg(target_os = "windows")]
 #[path = "platform/windows.rs"]
