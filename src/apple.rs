@@ -2,7 +2,7 @@ use crate::OsLocaleError;
 use objc::runtime::Object;
 // Yes I do need to import sel and sel_impl due to bugs with objc
 use objc::{class, msg_send, sel, sel_impl};
-use objc_foundation::{INSString, NSString};
+use objc_foundation::{INSArray, INSString, NSArray, NSString};
 
 pub(crate) fn _get_user_locale() -> Result<String, OsLocaleError> {
 	// https://developer.apple.com/documentation/foundation/nslocale/1409990-currentlocale?language=objc

@@ -81,36 +81,3 @@ fn parse_runtime_locale() {
 		},
 	}
 }
-
-#[test]
-fn test_linux_locales() {
-	// Test a few locales and if they parse correctly
-	assert_eq!(
-		raw_unix_to_locale("aa_DJ.UTF-8 UTF-8".to_string()).unwrap(),
-		"aa-DJ"
-	);
-	assert_eq!(
-		raw_unix_to_locale("aa_DJ ISO-8859-1".to_string()).unwrap(),
-		"aa-DJ"
-	);
-	assert_eq!(
-		raw_unix_to_locale("aa_ER@saaho UTF-8".to_string()).unwrap(),
-		"aa-ER"
-	);
-	assert_eq!(
-		raw_unix_to_locale("ar_QA ISO-8859-6".to_string()).unwrap(),
-		"ar-QA"
-	);
-	assert_eq!(
-		raw_unix_to_locale("en_GB.UTF-8 UTF-8".to_string()).unwrap(),
-		"en-GB"
-	);
-	assert_eq!(
-		raw_unix_to_locale("ko_KR.EUC-KR EUC-KR".to_string()).unwrap(),
-		"ko-KR"
-	);
-	assert_eq!(
-		raw_unix_to_locale("zh_CN.GB18030 GB18030".to_string()).unwrap(),
-		"zh-CN"
-	);
-}
