@@ -7,13 +7,13 @@ os-locale uses semantic versioning. More information about that may be found her
 
 ## Platform support
 
-| Platform | Implemented |
-| ------- | --- |
-| Windows | Yes |
-| Linux   | Yes |
-| Mac OS  | No  |
-| Android | No  |
-| iOS     | No  |
+| Platform 	| Implemented		|
+| -------	| ---			|
+| Windows	| Yes			|
+| Linux		| Yes			|
+| Mac OS	| Not fully tested	|
+| Android	| No			|
+| iOS		| Not fully tested	|
 
 The library exposes a single function to get the user's locale from the OS
 
@@ -30,10 +30,11 @@ locale from the OS.
 
 os-locale tries to use a few dependencies as possible. However we do use some platform dependencies:
 
-| Platform | Dependencies |
-| -------- | ------------ |
-| Windows  | winapi, libc |
-| Linux    | None         |
+| Platform  	| Dependencies		|
+| ----------	| ------------		|
+| Windows   	| winapi, libc		|
+| Linux     	| None			|
+| Mac OS/iOS	| objc, objc-foundation	|
 
 ## License
 
