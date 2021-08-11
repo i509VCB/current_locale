@@ -1,27 +1,122 @@
-on: [push]
+on:
+  push:
+    branches:
+    - master
+  pull_request:
 
-name: build
+name: Test
 
 jobs:
-  check:
-    name: Rust project
-    runs-on: ${{ matrix.os }}
+  format:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Install latest nightly
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           override: true
-          components: rustfmt, clippy
-
-      # `cargo check` command here will use installed `nightly`
-      # as it is set as an "override" for current directory
-
-      - name: Run cargo check
+          profile: minimal
+          components: rustfmt
+          default: true
+      - name: Format
         uses: actions-rs/cargo@v1
         with:
-          command: check
+          command: fmt
+          args: --all -- --check
+
+  clippy-check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          profile: minimal
+          components: clippy
+          default: true
+
+      - name: Clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: -- -D warnings
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          ## Windows
+          - { target: x86_64-pc-windows-msvc,    os: windows-latest,  }
+          - { target: i686-pc-windows-msvc,      os: windows-latest,  }
+          - { target: x86_64-pc-windows-gnu,     os: windows-latest, host: -x86_64-pc-windows-gnu }
+          - { target: i686-pc-windows-gnu,       os: windows-latest, host: -i686-pc-windows-gnu }
+          - { target: aarch64-pc-windows-msvc,   os: windows-latest,  }
+
+          ## Linux
+          - { target: x86_64-unknown-linux-gnu,  os: ubuntu-latest,   }
+          - { target: i686-unknown-linux-gnu,    os: ubuntu-latest,   }
+          - { target: aarch64-unknown-linux-gnu, os: ubuntu-latest,   }
+
+          ## Linux w/ musl 
+          - { target: x86_64-unknown-linux-musl, os: ubuntu-latest,   }
+          - { target: aarch64-unknown-linux-musl,os: ubuntu-latest,   }
+
+          ## macOS
+          - { target: x86_64-apple-darwin,       os: macos-latest,    }
+          - { target: aarch64-apple-darwin,      os: macos-latest     }
+
+          ## iOS
+          - { target: x86_64-apple-ios,          os: macos-latest,    }
+          - { target: aarch64-apple-ios,         os: macos-latest,    }
+
+          ## Android
+          # Not implemented at the moment
+          #- { target: aarch64-linux-android,     os: ubuntu-latest,  cmd: 'apk --' }
+
+          ## FreeBSD
+          - { target: x86_64-unknown-freebsd,    os: ubuntu-latest,  }
+
+    env:
+      CMD: ${{ matrix.platform.cmd }}
+
+    runs-on: ${{ matrix.platform.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install latest toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable${{ matrix.platform.host }}
+          components: rustfmt, clippy
+          target: ${{ matrix.platform.target }}
+          override: true
+
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -- -D warnings
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --verbose --target ${{ matrix.platform.target }}

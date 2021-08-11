@@ -1,5 +1,7 @@
-use crate::OsLocaleError;
+#![cfg(target_os = "android")]
 
-pub(crate) fn _get_user_locale() -> Result<String, OsLocaleError> {
-	unimplemented!("Android platform is not implemented yet!")
+use crate::LocaleError;
+
+pub(crate) fn current_locale() -> Result<String, LocaleError> {
+    unimplemented!("Android platform is not implemented yet!")
 }

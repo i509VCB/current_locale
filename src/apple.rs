@@ -1,30 +1,41 @@
-use crate::OsLocaleError;
+#![cfg(any(target_os = "macos", target_os = "ios"))]
+
+use crate::LocaleError;
 use objc::runtime::Object;
-// Yes I do need to import sel and sel_impl due to bugs with objc
-use objc::{class, msg_send, sel, sel_impl};
-use objc_foundation::{INSArray, INSString, NSArray, NSString};
+use objc::{class, msg_send, sel, sel_impl}; // sel_impl needs to be imported since `sel` does not export it within it's own scope
+use objc_foundation::{INSString, NSString};
 
-pub(crate) fn _get_user_locale() -> Result<String, OsLocaleError> {
-	// https://developer.apple.com/documentation/foundation/nslocale/1409990-currentlocale?language=objc
-	let nslocale = class!(NSLocale);
-	// Protocols galore to get the currentLocale then the localeIdentifier
-	let current: *const Object = unsafe { msg_send![nslocale, currentLocale] };
-	let identifier: *const NSString = unsafe { msg_send![current, localeIdentifier] };
-	let identifier = unsafe { identifier.as_ref() }.unwrap();
+pub(crate) fn current_locale() -> Result<String, LocaleError> {
+    // https://developer.apple.com/documentation/foundation/nslocale/1409990-currentlocale?language=objc
+    let nslocale = class!(NSLocale);
+    let identifier = unsafe {
+        let current: *const Object = msg_send![nslocale, currentLocale]; // [NSLocale currentLocale]
+        let identifier: *const NSString = msg_send![current, localeIdentifier]; // [currentLocale localIdentifier]
+        identifier.as_ref().unwrap()
+    };
 
-	// Convert to IETF
-	Ok(identifier.as_str().replace("_", "-"))
+    // Convert to IETF
+    // FIXME: Not every locale code is ietf compliant?
+    Ok(identifier.as_str().replace("_", "-"))
 }
 
-#[test]
-fn list_available() {
-	let nslocale = class!(NSLocale);
-	let current: *const NSArray<NSString> =
-		unsafe { msg_send![nslocale, availableLocaleIdentifiers] };
+#[cfg(test)]
+mod test {
+    use objc::{class, msg_send, sel, sel_impl}; // sel_impl needs to be imported since `sel` does not export it within it's own scope
+    use objc_foundation::{INSArray, INSString, NSArray, NSString};
 
-	let a = unsafe { current.as_ref() }.unwrap();
+    #[test]
+    fn list_available() {
+        let nslocale = class!(NSLocale);
 
-	for x in a.to_vec() {
-		println!("{}", x.as_str());
-	}
+        let available = unsafe {
+            let available: *const NSArray<NSString> =
+                msg_send![nslocale, availableLocaleIdentifiers];
+            available.as_ref().unwrap()
+        };
+
+        for locale in available.to_vec() {
+            println!("{}", locale.as_str());
+        }
+    }
 }
