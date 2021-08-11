@@ -51,7 +51,6 @@ mod imp;
 ///
 /// **Windows:** If the system is a single user system, then this method will default to the system's
 /// default language code rather than the user's set language code.
-///
 pub fn current_locale() -> Result<String, LocaleError> {
     imp::current_locale()
 }

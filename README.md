@@ -1,25 +1,23 @@
 # os-locale
 
-A rust library for getting the user's locale as a language code from the OS.
+A rust library for getting the current locale as a language code.
 The language code returned is in a BCP47 (IETF) format.
-
-os-locale uses semantic versioning. More information about that may be found here: https://semver.org/
 
 ## Platform support
 
-| Platform 	| Implemented		|
-| -------	| ---			|
-| Windows	| Yes			|
-| Unix		| Yes			|
-| Mac OS	| Not fully tested	|
-| Android	| No			|
-| iOS		| Not fully tested	|
+| Platform  | Implemented      |
+| -------   | ---              |
+| Windows   | Yes              |
+| Unix      | Yes              |
+| macOS     | Yes              |
+| Android   | No               |
+| iOS       | Not fully tested |
 
 The library exposes a single function to get the user's locale from the OS
 
 ```rust
-pub fn current_locale() -> Result<String, OsLocaleError> {
-	// Method Implementation...
+pub fn current_locale() -> Result<String, LocaleError> {
+    // Method Implementation...
 }
 ```
 
@@ -28,13 +26,13 @@ locale from the OS.
 
 ## Dependencies
 
-os-locale tries to use a few dependencies as possible. However we do use some platform dependencies:
+os-locale tries to use a few dependencies as possible. However we do necessarily require dependencies on some platforms:
 
-| Platform  	| Dependencies		|
-| ----------	| ------------		|
-| Windows   	| winapi, libc		|
-| Unix	     	| None				|
-| Mac OS/iOS	| objc, objc-foundation	|
+| Platform      | Dependencies          |
+| ----------    | ------------          |
+| Windows       | winapi, libc          |
+| Unix          | None                  |
+| macOS & iOS   | objc, objc-foundation	|
 
 ## License
 
