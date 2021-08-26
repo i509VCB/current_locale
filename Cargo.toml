@@ -1,11 +1,18 @@
 [package]
-name = "os-locale"
+name = "current_locale"
 version = "0.1.0"
 authors = [ "i509VCB <git@i509.me>" ]
 edition = "2018"
 description = """
-A small library to obtain the current locale.
+A library to get the user's current locale.
 """
+homepage = "https://github.com/i509VCB/os-locale"
+repository = "https://github.com/i509VCB/os-locale"
+documentation = "https://docs.rs/os-locale"
+readme = "README.md"
+license  = "MIT OR Apache-2.0"
+keywords = [ "localization", "locale" ]
+categories = [ "internationalization", "localization" ]
 
 # Platform dependencies
 [target.'cfg(windows)'.dependencies]

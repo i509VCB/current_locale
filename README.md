@@ -1,4 +1,4 @@
-# os-locale
+# current_locale
 
 A rust library for getting the current locale as a language code.
 The language code returned is in a BCP47 (IETF) format.

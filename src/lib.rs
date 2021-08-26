@@ -1,20 +1,22 @@
 #![warn(missing_docs)]
 
-//! # os-locale
+//! # current_locale
 //!
-//! os-locale is a library for obtaining a user's current locale from the OS.
-//! os-locale provides methods to get the user's preferred language in a form similar to a BCP47 (IETF) compliant
-//! language code.
+//! current_locale is a library for obtaining a user's current locale from the operating system.
+//! The language code corresponding to the user's current locale is a BCP47 (IETF) compliant.
 //!
-//! Obtaining the user's current locale is widely useful for displaying a user's preferred language
-//! in applications.
+//! One example use is printing the user's current locale to stdout:
+//!
+//! ```
+//! let current_locale = current_locale::current_locale()?;
+//! println!("The current locale is: {}", current_locale);
+//! # Ok::<(), Box<dyn std::error::Error>>(())
+//! ```
 
 use std::{error::Error, fmt::Display};
 
-// Platform implementations
-
-#[cfg(any(target_os = "android",))]
-compile_error!("You are compiling for an unimplemented platform!\nContributions are welcome to os-locale to implement any new platforms.");
+#[cfg(any(target_os = "android", target_arch = "wasm32"))]
+compile_error!("You are compiling for an unimplemented platform!\nContributions are welcome to current_locale to implement any new platforms.");
 
 #[cfg(target_os = "windows")]
 #[path = "windows.rs"]
@@ -29,10 +31,6 @@ mod imp;
     not(any(target_os = "macos", target_os = "ios", target_os = "android"))
 ))]
 #[path = "unix.rs"]
-mod imp;
-
-#[cfg(target_os = "android")]
-#[path = "android.rs"]
 mod imp;
 
 /// Returns the current locale of the process or an error.
@@ -87,7 +85,7 @@ pub enum ErrorKind {
     /// An error which indicates the returned language code is not IETF compliant.
     NotIetfCompliant(String),
 
-    /// An error which represents a failure by the OS to look up the user's locale.
+    /// An error which represents a failure by the operating system to look up the user's locale.
     ///
     /// # Platform Specific Behavior
     ///
