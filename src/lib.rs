@@ -15,11 +15,15 @@
 
 use std::{error::Error, fmt::Display};
 
-#[cfg(any(target_os = "android", target_arch = "wasm32"))]
+#[cfg(target_arch = "wasm32")]
 compile_error!("You are compiling for an unimplemented platform!\nContributions are welcome to current_locale to implement any new platforms.");
 
 #[cfg(target_os = "windows")]
 #[path = "windows.rs"]
+mod imp;
+
+#[cfg(target_os = "android")]
+#[path = "android.rs"]
 mod imp;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]

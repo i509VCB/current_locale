@@ -10,7 +10,7 @@ The language code returned is in a BCP47 (IETF) format.
 | Windows   | Yes              |
 | Unix      | Yes              |
 | macOS     | Yes              |
-| Android   | No               |
+| Android   | Yes              |
 | iOS       | Not fully tested |
 
 The library exposes a single function to get the user's locale from the OS
