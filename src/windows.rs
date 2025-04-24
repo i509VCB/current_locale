@@ -1,5 +1,3 @@
-#![cfg(target_os = "windows")]
-
 use crate::{ErrorKind, LocaleError};
 use std::ffi::OsString;
 use std::os::raw::c_int;
