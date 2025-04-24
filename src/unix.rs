@@ -33,7 +33,7 @@ fn normalize_to_ietf(raw: &str) -> Result<String, LocaleError> {
      * A space which separates generic code from char set.
      * Terminate at an `@` which specifies a locale at a specific location
      */
-    if let Some(pos) = raw.find(|c| c == ' ' || c == '.') {
+    if let Some(pos) = raw.find([' ', '.']) {
         let (raw_lang_code, _) = raw.split_at(pos);
         let result = raw_lang_code.replace("_", "-");
 

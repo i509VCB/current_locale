@@ -1,28 +1,33 @@
 #![cfg(any(target_os = "macos", target_os = "ios"))]
 
 use crate::LocaleError;
-use objc::runtime::Object;
-use objc::{class, msg_send, sel, sel_impl}; // sel_impl needs to be imported since `sel` does not export it within it's own scope
-use objc_foundation::{INSString, NSString};
+use objc2::rc::autoreleasepool;
+use objc2::runtime::AnyObject;
+use objc2::{class, msg_send};
+use objc2_foundation::NSString;
 
 pub(crate) fn current_locale() -> Result<String, LocaleError> {
     // https://developer.apple.com/documentation/foundation/nslocale/1409990-currentlocale?language=objc
     let nslocale = class!(NSLocale);
     let identifier = unsafe {
-        let current: *const Object = msg_send![nslocale, currentLocale]; // [NSLocale currentLocale]
+        let current: *const AnyObject = msg_send![nslocale, currentLocale]; // [NSLocale currentLocale]
         let identifier: *const NSString = msg_send![current, localeIdentifier]; // [currentLocale localIdentifier]
         identifier.as_ref().unwrap()
     };
 
     // Convert to IETF
     // FIXME: Not every locale code is ietf compliant?
-    Ok(identifier.as_str().replace("_", "-"))
+    let locale_string = autoreleasepool(|pool| {
+        // SAFETY: The str is not used outside the autorelease pool.
+        unsafe { identifier.to_str(pool).replace("_", "-") }
+    });
+    Ok(locale_string)
 }
 
 #[cfg(test)]
 mod test {
-    use objc::{class, msg_send, sel, sel_impl}; // sel_impl needs to be imported since `sel` does not export it within it's own scope
-    use objc_foundation::{INSArray, INSString, NSArray, NSString};
+    use objc2::{class, msg_send, rc::autoreleasepool};
+    use objc2_foundation::{NSArray, NSString};
 
     #[test]
     fn list_available() {
@@ -35,7 +40,11 @@ mod test {
         };
 
         for locale in available.to_vec() {
-            println!("{}", locale.as_str());
+            let locale_string = autoreleasepool(|pool| {
+                // SAFETY: The str is not used outside the autorelease pool.
+                unsafe { locale.to_str(pool).replace("_", "-") }
+            });
+            println!("{}", locale_string);
         }
     }
 }
