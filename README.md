@@ -32,7 +32,8 @@ os-locale tries to use a few dependencies as possible. However we do necessarily
 | ----------    | ------------          |
 | Windows       | winapi, libc          |
 | Unix          | None                  |
-| macOS & iOS   | objc, objc-foundation	|
+| macOS & iOS   | objc2, objc2-foundation	|
+| Android          | jni, ndk-context                  |
 
 ## License
 
