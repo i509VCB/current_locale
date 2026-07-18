@@ -16,7 +16,8 @@
 use std::{error::Error, fmt::Display};
 
 #[cfg(target_arch = "wasm32")]
-compile_error!("You are compiling for an unimplemented platform!\nContributions are welcome to current_locale to implement any new platforms.");
+#[path = "web.rs"]
+mod imp;
 
 #[cfg(target_os = "windows")]
 #[path = "windows.rs"]

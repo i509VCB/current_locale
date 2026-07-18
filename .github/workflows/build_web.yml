@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+name: Test (wasm32)
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install latest toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+          target: wasm32-unknown-unknown
+          override: true
+
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -- -D warnings
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --verbose --target wasm32-unknown-unknown
+      - name: Install
+        run: curl https://wasm-bindgen.github.io/wasm-pack/installer/init.sh -sSf | bash
+      - name: Run test
+        run: wasm-pack test --firefox --headless

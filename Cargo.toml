@@ -14,6 +14,9 @@ license  = "MIT OR Apache-2.0"
 keywords = [ "localization", "locale" ]
 categories = [ "internationalization", "localization" ]
 
+[lib]
+crate-type = ["cdylib", "rlib"] # required to compile to wasm
+
 # Platform dependencies
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3.9", features = [ "minwindef", "winnls", "winnt" ] } # WORD, winnls.h, LANGID
@@ -26,3 +29,8 @@ objc2-foundation = "0.3.1"
 [target.'cfg(target_os = "android")'.dependencies]
 jni = "0.21.1"
 ndk-context = "0.1.1"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+web-sys = { version = "0.3.91", features = [ "Navigator", "Window" ] }
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+wasm-bindgen-test = "0.3"
